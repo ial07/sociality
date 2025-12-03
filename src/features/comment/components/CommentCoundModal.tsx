@@ -22,6 +22,7 @@ import {
 import { Icon } from "@iconify/react";
 import { Button } from "@/components/ui/button";
 import CommentInput from "./CommentInput";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface CommentCountModalProps {
   id: number;
@@ -81,10 +82,6 @@ const CommentCountModal: React.FC<CommentCountModalProps> = ({
 }) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  if (commentsCount === 0) {
-    return <>{trigger}</>;
-  }
-
   // --- Mobile (Sheet) ---
   if (isMobile) {
     return (
@@ -94,21 +91,29 @@ const CommentCountModal: React.FC<CommentCountModalProps> = ({
           <SheetHeader className="px-4 pt-4 border-b border-neutral-800">
             <SheetTitle>Comments ({commentsCount})</SheetTitle>
           </SheetHeader>
-          <div className="overflow-y-auto pt-4">
-            {" "}
-            {/* Tambahkan scroll di sini */}
+          <div className="overflow-y-auto pt-4 grow">
             <CommentsListContent commentList={commentList} />
+          </div>
+          <div className="flex gap-2 w-full">
+            <div className="p-3 border border-neutral-900 w-fit rounded-xl text-white cursor-pointer">
+              <Icon
+                icon="icon-park-outline:emotion-happy"
+                width="20"
+                height="20"
+              />
+            </div>
+            <CommentInput postId={id} />
           </div>
         </SheetContent>
       </Sheet>
     );
   }
 
-  // --- Desktop (Dialog) ---
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="p-0 max-w-[1000px] flex h-[600px] gap-0">
+        <DialogTitle />
         <DialogDescription asChild>
           <div className="flex w-full h-full rounded-lg overflow-hidden">
             <div className="relative w-[560px] h-full flex-shrink-0 bg-neutral-900">
@@ -122,7 +127,6 @@ const CommentCountModal: React.FC<CommentCountModalProps> = ({
             </div>
 
             <div className="flex flex-col flex-grow h-full w-[440px] p-5">
-              {/* POST HEADER/CAPTION (Flex-shrink-0) */}
               <div className="flex-shrink-0">
                 <div className="flex gap-3 items-center mb-2">
                   <Image
@@ -141,7 +145,6 @@ const CommentCountModal: React.FC<CommentCountModalProps> = ({
                     </p>
                   </div>
                 </div>
-                {/* Caption Teks */}
                 <p className="text-sm-regular text-neutral-25 line-clamp-2">
                   {captionText}
                 </p>
@@ -151,7 +154,16 @@ const CommentCountModal: React.FC<CommentCountModalProps> = ({
                 Comments ({commentsCount})
               </span>
               <div className="flex-grow overflow-y-auto thin-scrollbar">
-                <CommentsListContent commentList={commentList} />
+                {commentList.comments.length == 0 ? (
+                  <div className="flex-center flex-col my-11.5">
+                    <span className="text-md-bold">No Comments yet</span>
+                    <p className="text-sm-regular text-neutral-400">
+                      Start the conversation
+                    </p>
+                  </div>
+                ) : (
+                  <CommentsListContent commentList={commentList} />
+                )}
               </div>
 
               <div className="flex gap-2 w-full">

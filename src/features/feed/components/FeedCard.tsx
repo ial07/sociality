@@ -8,6 +8,8 @@ import LikeCountModal from "@/features/like/components/LikeCountModal";
 import { usePostLikesById } from "@/features/like/hooks/useLike";
 import { usePostCommentsById } from "@/features/comment/hooks/useComment";
 import CommentCountModal from "@/features/comment/components/CommentCoundModal";
+import LikeButton from "@/features/like/components/LikeButton";
+import SaveButton from "@/features/saves/components/SaveButton";
 
 interface FeedCardProps {
   id: number;
@@ -99,12 +101,7 @@ const FeedCard: React.FC<FeedCardProps> = ({
       <div className="flex-between mb-3 md:mb-2">
         <div className="flex-start gap-4">
           <div className="flex-start gap-1.5 cursor-pointer">
-            <Icon
-              icon={isLiked ? "tabler:heart-filled" : "solar:heart-linear"}
-              width="24"
-              height="24"
-              className={isLiked ? "text-danger" : "text-foreground"}
-            />
+            <LikeButton postId={id} isLiked={isLiked} />
             {!isLoadingLike && (
               <LikeCountModal
                 likesCount={likesCount}
@@ -149,14 +146,7 @@ const FeedCard: React.FC<FeedCardProps> = ({
           </div>
         </div>
 
-        <div className="cursor-pointer">
-          <Icon
-            icon={isBookmarked ? "prime:bookmark-fill" : "circum:bookmark"}
-            width="24"
-            height="24"
-            className={isBookmarked ? "text-primary" : "text-foreground"}
-          />
-        </div>
+        <SaveButton postId={id} isBookmarked={isBookmarked} />
       </div>
 
       {/* CAPTION/TEXT CONTENT */}

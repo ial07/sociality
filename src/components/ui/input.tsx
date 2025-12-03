@@ -20,64 +20,65 @@ type InputProps = React.ComponentProps<"input"> & {
 function Input({ label, error, id, type, className, ...props }: InputProps) {
   const [show, setShow] = React.useState(false);
   const [preview, setPreview] = React.useState<string | null>(null);
+
+  // PERBAIKAN: Gunakan useId untuk generate ID unik jika props 'id' kosong
+  const generatedId = React.useId();
+  const inputId = id || generatedId;
+
   const isPassword = type === "password";
   const isFile = type === "file";
 
-  // Handle perubahan file untuk preview gambar
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const objectUrl = URL.createObjectURL(file);
       setPreview(objectUrl);
     }
-    // Panggil onChange asli jika ada props yang dikirim
     if (props.onChange) {
       props.onChange(e);
     }
   };
 
-  // Handle remove file
   const handleRemoveFile = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation(); // Mencegah klik tembus ke label (agar tidak membuka dialog file lagi)
     setPreview(null);
-    // Reset input value (perlu trik sedikit karena input hidden)
-    const input = document.getElementById(id as string) as HTMLInputElement;
+    const input = document.getElementById(inputId) as HTMLInputElement;
     if (input) input.value = "";
   };
 
-  // --- LOGIKA KHUSUS TIPE FILE ---
+  // --- LOGIKA TIPE FILE ---
   if (isFile) {
     return (
       <div className="space-y-1 mb-5">
         {label && (
-          <Label htmlFor={id} className="font-bold mb-3 block">
+          <Label htmlFor={inputId} className="font-bold mb-3 block">
             {label}
           </Label>
         )}
         <div className="relative w-full">
-          {/* Input asli disembunyikan */}
+          {/* Input Hidden dengan ID yang pasti ada */}
           <input
-            id={id}
+            id={inputId}
             type="file"
             className="hidden"
             onChange={handleFileChange}
-            accept="image/*" // Opsional: batasi hanya gambar
+            accept="image/*"
             {...props}
           />
 
-          {/* Label yang bertindak sebagai trigger klik */}
+          {/* Label terhubung ke ID input */}
           <label
-            htmlFor={id}
+            htmlFor={inputId}
             className={cn(
               "flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-xl cursor-pointer transition-colors bg-neutral-950 border-neutral-800 hover:bg-neutral-900",
               error && "border-[#EE1D52] bg-[#EE1D52]/10",
               preview &&
-                "border-solid border-neutral-800 p-0 overflow-hidden relative", // Style saat ada preview
+                "border-solid border-neutral-800 p-0 overflow-hidden relative",
               className
             )}
           >
             {preview ? (
-              // Tampilan saat ada file/gambar terpilih
               <div className="relative w-full h-full group">
                 <Image
                   src={preview}
@@ -85,13 +86,12 @@ function Input({ label, error, id, type, className, ...props }: InputProps) {
                   fill
                   className="object-cover"
                 />
-                {/* Overlay hover untuk ganti/hapus */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <p className="text-white text-sm font-semibold">
                     Change Image
                   </p>
                 </div>
-                {/* Tombol Hapus */}
+                {/* Tombol Hapus dengan stopPropagation */}
                 <button
                   onClick={handleRemoveFile}
                   className="absolute top-2 right-2 bg-neutral-900/80 p-1.5 rounded-full text-white hover:bg-red-500 transition-colors z-10"
@@ -100,8 +100,7 @@ function Input({ label, error, id, type, className, ...props }: InputProps) {
                 </button>
               </div>
             ) : (
-              // Tampilan Kosong (Upload Placeholder)
-              <div className="flex flex-col items-center justify-center pt-5 pb-6 text-neutral-400 border w-full py-4 rounded-xl">
+              <div className="flex flex-col items-center justify-center pt-5 pb-6 text-neutral-400">
                 <div className="bg-neutral-900 p-3 rounded-full mb-3">
                   <CloudUpload className="w-6 h-6 text-neutral-400" />
                 </div>
@@ -123,18 +122,18 @@ function Input({ label, error, id, type, className, ...props }: InputProps) {
     );
   }
 
-  // --- LOGIKA INPUT BIASA (TEXT/PASSWORD) ---
+  // --- LOGIKA INPUT BIASA ---
   return (
     <div className="space-y-1 mb-5">
       {label && (
-        <Label htmlFor={id} className="font-bold mb-3">
+        <Label htmlFor={inputId} className="font-bold mb-3">
           {label}
         </Label>
       )}
 
       <div className="relative">
         <input
-          id={id}
+          id={inputId}
           type={isPassword && show ? "text" : type}
           className={cn(
             "placeholder:text-muted-foreground border-input h-12 w-full rounded-lg border bg-neutral-950 px-4 py-2 text-sm-semibold md:text-md-semibold outline-none read-only:bg-neutral-900",
