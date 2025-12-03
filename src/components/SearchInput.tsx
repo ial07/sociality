@@ -19,7 +19,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...props }) => {
   };
 
   const inputClasses = `
-    py-2 px-10.5 bg-neutral-900 border border-neutral-900 rounded-full w-full transition-all duration-300
+    py-2 px-10.5 bg-neutral-900 border border-neutral-800 rounded-full w-full transition-all duration-300
     md:w-123 md:block 
     ${isMobileInputVisible ? "block w-full" : "hidden"}
   `;
@@ -30,9 +30,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...props }) => {
     md:relative md:justify-start
   `;
 
-  // Tentukan class untuk ikon
-  // Mobile: Selalu tampilkan ikon
-  // Desktop: Ikon berada di dalam input sebagai dekorasi (left-2)
   const iconClasses = `
     absolute text-neutral-500 transition-colors duration-300 cursor-pointer 
     size-5 top-2.5 -translate-y-1/2 

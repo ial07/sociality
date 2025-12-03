@@ -1,4 +1,4 @@
-import { User } from "./Profile.type";
+import { Author } from "./Profile.type";
 
 
 export interface LoginPayload {
@@ -8,7 +8,7 @@ export interface LoginPayload {
 
 export interface AuthState {
   token: string | null;
-  user: User | null;
+  user: Author | null;
 }
 
 export interface registerPayload {

@@ -1,7 +1,7 @@
 import { apiInstance } from '@/api/api'
 import { ApiResponse } from '@/types/Api.type'
 import { AuthState, LoginPayload, registerPayload } from '@/types/Auth.type'
-import { User } from '@/types/Profile.type'
+import { Author } from '@/types/Profile.type'
 import type { AxiosError } from 'axios'
 
 // POST Login
@@ -23,9 +23,9 @@ export async function login(
 // POST Register
 export async function register(
   payload: registerPayload
-): Promise<ApiResponse<User>> {
+): Promise<ApiResponse<Author>> {
   try {
-    const res = await apiInstance.post<ApiResponse<User>>(
+    const res = await apiInstance.post<ApiResponse<Author>>(
       '/auth/register',
       payload
     )

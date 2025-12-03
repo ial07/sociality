@@ -1,15 +1,28 @@
-export type User = {
-    id: string;
-    name: string;
-    username: string;
+export interface Author {
+    id:number;
+    username:string;
+    name:string;
     email: string;
-    phoneNumber?:string;
-    role?:"USER"|"ADMIN"
+    phone?:string;
+    bio?:string;
+    avatarUrl?:string;
     createdAt?:string;
+}
+
+export interface Stats {
+    posts:number;
+    followers:number;
+    following:number;
+    likes:number;
   }
 
 
 export type ProfileResponse = {
-    profile : User;
-    reviewsCount:number;
+    profile : Author;
+    stats:Stats;
+}
+
+export type ProfileUserResponse = {
+    profile : Author;
+    stats:Stats;
 }

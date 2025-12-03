@@ -7,8 +7,8 @@ import { ApiResponse } from "@/types/Api.type";
 import { AuthState, LoginPayload, registerPayload } from "@/types/Auth.type";
 import { login, register } from "../services/authService";
 import { setCredentials } from "@/redux/slices/authSlice";
-import { User } from "@/types/Profile.type";
 import { toast } from "react-toastify";
+import { Author } from "@/types/Profile.type";
 
 export const useAuth = () => {
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ export const useAuth = () => {
     },
   });
 
-  const registerMutation = useMutation<ApiResponse<User>, Error, registerPayload>({
+  const registerMutation = useMutation<ApiResponse<Author>, Error, registerPayload>({
     mutationFn: register,
     onSuccess: (data) => { 
       const successMessage = data.message || "Registration successful!"; 
