@@ -10,12 +10,14 @@ import { getPostCommentsById, postComment } from "../services/commentService";
 
 export function usePostCommentsById(
   id: number = 1,
+  isOpen: boolean,
   page: number = 1,
-  limit: number = 10
+  limit: number = 10, 
 ) {
   return useQuery<CommentsListResponse, Error>({
     queryKey: ["postcommentid", id, page, limit],
     queryFn: async () => {
+      console.log("🚀 [DEBUG] Fetching Comments with params:", { id, page, limit });
       const res: ApiResponse<CommentsListResponse> = await getPostCommentsById(
         id,
         page,
@@ -25,6 +27,7 @@ export function usePostCommentsById(
       return res.data;
     },
     placeholderData: keepPreviousData,
+    enabled: isOpen && !!id,
   });
 }
 

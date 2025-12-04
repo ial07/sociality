@@ -28,7 +28,7 @@ const Profile: React.FC = () => {
     error: errorSaved,
   } = useSavedMePost();
   return (
-    <div>
+    <div className="h-screen">
       <ProfileInfo
         data={data ?? null}
         isError={isError}

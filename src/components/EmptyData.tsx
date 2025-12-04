@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 const EmptyData: React.FC = () => {
   return (
@@ -11,7 +12,9 @@ const EmptyData: React.FC = () => {
         Share your first post and let the world see your moments, passions, and
         memories. Make this space truly yours.
       </p>
-      <Button className="rounded-full w-62">Upload My First Post</Button>
+      <Button className="rounded-full w-62">
+        <Link href="/add-post">Upload My First Post</Link>
+      </Button>
     </div>
   );
 };

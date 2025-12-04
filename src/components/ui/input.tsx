@@ -8,9 +8,12 @@ import {
   CloudUpload,
   Image as ImageIcon,
   X,
+  Upload, // Import ikon Upload baru untuk tombol ganti
+  Trash2, // Import ikon Trash baru untuk tombol hapus
 } from "lucide-react";
 import { Label } from "./label";
 import Image from "next/image";
+import { Button } from "./button"; // Asumsi Anda memiliki Button ShadCN yang bisa diimport
 
 type InputProps = React.ComponentProps<"input"> & {
   label?: string;
@@ -21,7 +24,6 @@ function Input({ label, error, id, type, className, ...props }: InputProps) {
   const [show, setShow] = React.useState(false);
   const [preview, setPreview] = React.useState<string | null>(null);
 
-  // PERBAIKAN: Gunakan useId untuk generate ID unik jika props 'id' kosong
   const generatedId = React.useId();
   const inputId = id || generatedId;
 
@@ -41,10 +43,21 @@ function Input({ label, error, id, type, className, ...props }: InputProps) {
 
   const handleRemoveFile = (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation(); // Mencegah klik tembus ke label (agar tidak membuka dialog file lagi)
+    e.stopPropagation();
     setPreview(null);
     const input = document.getElementById(inputId) as HTMLInputElement;
     if (input) input.value = "";
+    // Jika ada onChange dari RHF, panggil dengan null/undefined untuk mereset state file
+    if (props.onChange) {
+      props.onChange({ target: { files: null } } as any);
+    }
+  };
+
+  // Trigger klik input file hidden saat tombol 'Change Image' diklik
+  const handleTriggerFileInput = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation(); // Penting! Jangan buka dialog file di luar tombol
+    document.getElementById(inputId)?.click();
   };
 
   // --- LOGIKA TIPE FILE ---
@@ -57,7 +70,6 @@ function Input({ label, error, id, type, className, ...props }: InputProps) {
           </Label>
         )}
         <div className="relative w-full">
-          {/* Input Hidden dengan ID yang pasti ada */}
           <input
             id={inputId}
             type="file"
@@ -67,39 +79,61 @@ function Input({ label, error, id, type, className, ...props }: InputProps) {
             {...props}
           />
 
-          {/* Label terhubung ke ID input */}
           <label
             htmlFor={inputId}
             className={cn(
-              "flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-xl cursor-pointer transition-colors bg-neutral-950 border-neutral-800 hover:bg-neutral-900",
-              error && "border-[#EE1D52] bg-[#EE1D52]/10",
+              // Style saat KOSONG
+              !preview &&
+                "flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-xl cursor-pointer transition-colors bg-neutral-950 border-neutral-800 hover:bg-neutral-900",
+              // Style saat ADA PREVIEW (Menjadi container untuk gambar dan tombol)
               preview &&
-                "border-solid border-neutral-800 p-0 overflow-hidden relative",
+                "border-solid border-neutral-800 p-0 overflow-hidden relative block",
+              error && "border-[#EE1D52] bg-[#EE1D52]/10",
               className
             )}
           >
             {preview ? (
-              <div className="relative w-full h-full group">
-                <Image
-                  src={preview}
-                  alt="Preview"
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <p className="text-white text-sm font-semibold">
-                    Change Image
-                  </p>
+              // Tampilan saat ada file/gambar terpilih
+              // Struktur: Gambar di atas (aspect-ratio), Tombol di bawah
+              <div className="flex flex-col w-full">
+                {/* GAMBAR PREVIEW */}
+                <div className="relative w-full aspect-square">
+                  <Image
+                    src={preview}
+                    alt="Preview"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
-                {/* Tombol Hapus dengan stopPropagation */}
-                <button
-                  onClick={handleRemoveFile}
-                  className="absolute top-2 right-2 bg-neutral-900/80 p-1.5 rounded-full text-white hover:bg-red-500 transition-colors z-10"
+
+                {/* BUTTONS / FOOTER */}
+                <div
+                  className="flex justify-center gap-3 p-4 bg-neutral-950 border-t border-neutral-800"
+                  // Mencegah klik di area tombol membuka dialog file lagi
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <X size={16} />
-                </button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="rounded-full px-4 text-xs"
+                    // Trigger klik pada input file hidden
+                    onClick={handleTriggerFileInput}
+                  >
+                    <Upload className="mr-2 h-4 w-4" /> Change Image
+                  </Button>
+
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="rounded-full px-4 text-xs"
+                    onClick={handleRemoveFile}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete Image
+                  </Button>
+                </div>
               </div>
             ) : (
+              // Tampilan Kosong (Upload Placeholder) - (Kode Anda tetap)
               <div className="flex flex-col items-center justify-center pt-5 pb-6 text-neutral-400">
                 <div className="bg-neutral-900 p-3 rounded-full mb-3">
                   <CloudUpload className="w-6 h-6 text-neutral-400" />
@@ -111,7 +145,7 @@ function Input({ label, error, id, type, className, ...props }: InputProps) {
                   or drag and drop
                 </p>
                 <p className="text-xs text-neutral-500">
-                  SVG, PNG, JPG or GIF (MAX. 800x400px)
+                  PNG or JPG (max. 5mb)
                 </p>
               </div>
             )}

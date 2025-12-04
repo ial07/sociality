@@ -26,7 +26,9 @@ const Header: React.FC = () => {
   return (
     <header className="py-3 md:py-5.5 border border-neutral-900">
       <nav className="custom-container flex-between">
-        <Image src="/icons/Logo.svg" alt="logo" width={137} height={36} />
+        <Link href="/">
+          <Image src="/icons/Logo.svg" alt="logo" width={137} height={36} />
+        </Link>
         <SearchInput />
         <div className="flex gap-3">
           {!token ? (

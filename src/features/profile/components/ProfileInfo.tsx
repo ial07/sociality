@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ProfileResponse, ProfileUserResponse } from "@/types/Profile.type";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 interface ProfileInfoProps {
@@ -44,8 +45,8 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant={"outline"} className="rounded-full">
-            Edit Profile
+          <Button variant={"outline"} className="rounded-full" asChild>
+            <Link href="/edit-profile">Edit Profile</Link>
           </Button>
           <div className="rounded-full border border-neutral-900 p-3">
             <Icon icon="bitcoin-icons:share-outline" width="24" height="24" />

@@ -1,5 +1,6 @@
 import EmptyData from "@/components/EmptyData";
 import { Button } from "@/components/ui/button";
+import CommentCountModal from "@/features/comment/components/CommentCoundModal";
 import { Feed, FeedsListResponse, PostListResponse } from "@/types/Feed.type";
 import Image from "next/image";
 import React from "react";
@@ -35,16 +36,31 @@ const ListProfilePost: React.FC<ListProfilePostProps> = ({
 
   return (
     <div className="grid grid-cols-3 gap-1">
-      {postsContent.map((p) => (
-        <Image
-          src={p.imageUrl}
-          alt={p.author.name}
-          width={500}
-          height={500}
-          unoptimized
-          className="aspect-square object-cover rounded-sm"
-        />
-      ))}
+      {postsContent.map(
+        (p) =>
+          !isLoading && (
+            <CommentCountModal
+              key={p.id}
+              id={p.id}
+              commentsCount={p.commentCount}
+              authorName={p.author?.name}
+              authorAvatarUrl={p.author.avatarUrl ?? "/images/author.png"}
+              timeAgo={p.createdAt}
+              feedImageUrl={p.imageUrl}
+              captionText={p.caption}
+              trigger={
+                <Image
+                  src={p.imageUrl}
+                  alt={p.author?.name ?? ""}
+                  width={500}
+                  height={500}
+                  unoptimized
+                  className="aspect-square object-cover rounded-sm cursor-pointer"
+                />
+              }
+            />
+          )
+      )}
     </div>
   );
 };

@@ -18,7 +18,7 @@ export default function RootLayout({
           <QueryProvider>
             {children}
 
-            <ToastContainer />
+            <ToastContainer theme="colored" />
           </QueryProvider>
         </ReduxProvider>
       </body>

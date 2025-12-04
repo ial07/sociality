@@ -10,6 +10,7 @@ import { usePostCommentsById } from "@/features/comment/hooks/useComment";
 import CommentCountModal from "@/features/comment/components/CommentCoundModal";
 import LikeButton from "@/features/like/components/LikeButton";
 import SaveButton from "@/features/saves/components/SaveButton";
+import { toRelativeTime } from "@/lib/utils";
 
 interface FeedCardProps {
   id: number;
@@ -47,8 +48,6 @@ const FeedCard: React.FC<FeedCardProps> = ({
   const captionRef = useRef<HTMLParagraphElement>(null);
 
   const { data: mockLikeList, isLoading: isLoadingLike } = usePostLikesById(id);
-  const { data: mockCommentList, isLoading: isLoadingComment } =
-    usePostCommentsById(id);
 
   useEffect(() => {
     if (captionRef.current) {
@@ -81,12 +80,11 @@ const FeedCard: React.FC<FeedCardProps> = ({
             {authorName}
           </h3>
           <p className="text-xs-regular md:text-sm-regular text-neutral-400">
-            {timeAgo}
+            {toRelativeTime(timeAgo)}
           </p>
         </div>
       </div>
 
-      {/* FEED IMAGE */}
       <div className="w-full rounded-md overflow-hidden mb-2 md:mb-3 aspect-square">
         <Image
           src={feedImageUrl}
@@ -116,28 +114,24 @@ const FeedCard: React.FC<FeedCardProps> = ({
           </div>
           {/* COMMENT */}
           <div className="flex-start gap-1.5 cursor-pointer">
-            {!isLoadingComment && (
-              <CommentCountModal
-                id={id}
-                commentsCount={commentsCount}
-                commentList={mockCommentList!}
-                authorName={authorName}
-                authorAvatarUrl={authorAvatarUrl ?? "/images/author.png"}
-                timeAgo={timeAgo}
-                feedImageUrl={feedImageUrl}
-                captionText={captionText}
-                trigger={
-                  <div className="flex gap-2">
-                    <Icon icon="mage:message-dots" width="24" height="24" />
-                    <span className="text-sm-semibold md:text-md-semibold cursor-pointer">
-                      {commentsCount}
-                    </span>
-                  </div>
-                }
-              />
-            )}
+            <CommentCountModal
+              id={id}
+              commentsCount={commentsCount}
+              authorName={authorName}
+              authorAvatarUrl={authorAvatarUrl ?? "/images/author.png"}
+              timeAgo={timeAgo}
+              feedImageUrl={feedImageUrl}
+              captionText={captionText}
+              trigger={
+                <div className="flex gap-2">
+                  <Icon icon="mage:message-dots" width="24" height="24" />
+                  <span className="text-sm-semibold md:text-md-semibold cursor-pointer">
+                    {commentsCount}
+                  </span>
+                </div>
+              }
+            />
           </div>
-          {/* SHARE */}
           <div className="flex-start gap-1.5 cursor-pointer">
             <Icon icon="bitcoin-icons:share-outline" width="24" height="24" />
             <span className="text-sm-semibold md:text-md-semibold">
@@ -149,12 +143,10 @@ const FeedCard: React.FC<FeedCardProps> = ({
         <SaveButton postId={id} isBookmarked={isBookmarked} />
       </div>
 
-      {/* CAPTION/TEXT CONTENT */}
       <div>
         <h3 className="text-sm-bold md:text-md-bold text-foreground mb-1">
           {authorName}
         </h3>
-        {/* Paragraf Utama: Dipotong menggunakan logika state */}
         <p
           ref={captionRef}
           className={`text-sm-regular md:text-md-regular text-foreground ${
