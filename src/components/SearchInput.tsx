@@ -6,8 +6,7 @@ import Link from "next/link";
 import { Author } from "@/types/Profile.type";
 import { useUsersSearch } from "@/features/users/hooks/useUsers";
 
-// --- 1. Utility Hook: useDebounce ---
-// (Bisa dipindahkan ke file terpisah: src/hooks/useDebounce.ts)
+// --- Utility Hook ---
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -29,13 +28,19 @@ type SearchInputProps = React.ComponentProps<"input"> & {};
 const SearchInput: React.FC<SearchInputProps> = ({ ...props }) => {
   const [isMobileInputVisible, setIsMobileInputVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-
   const [searchTerm, setSearchTerm] = useState("");
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
   const inputRef = useRef<HTMLInputElement>(null);
-  const isDesktop = typeof window !== "undefined" && window.innerWidth >= 768;
+
+  // Periksa window hanya di client side untuk menghindari hydration mismatch
+  const [isDesktop, setIsDesktop] = useState(true);
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768);
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop);
+    return () => window.removeEventListener("resize", checkDesktop);
+  }, []);
 
   const {
     data: searchResults,
@@ -44,8 +49,19 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...props }) => {
   } = useUsersSearch(debouncedSearchTerm);
 
   const users: Author[] = searchResults?.users || [];
-
   const shouldShowPopup = isFocused && searchTerm.length > 0;
+
+  // --- LOGIC BARU: Handle Klik Link ---
+  const handleLinkClick = () => {
+    // 1. Tutup Popup
+    setIsFocused(false);
+    // 2. Bersihkan text input (Opsional, agar bersih saat kembali)
+    setSearchTerm("");
+    // 3. Tutup mode input mobile jika sedang di mobile
+    if (!isDesktop) {
+      setIsMobileInputVisible(false);
+    }
+  };
 
   const toggleInput = () => {
     if (!isDesktop) {
@@ -68,7 +84,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...props }) => {
   }, [isMobileInputVisible]);
 
   const handleBlur = () => {
-    // Delay penutupan agar klik pada link hasil sempat tereksekusi
     setTimeout(() => {
       setIsFocused(false);
       if (!isDesktop && searchTerm.length === 0) {
@@ -143,7 +158,11 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...props }) => {
                     key={user.id}
                     href={`/profile/${user.username}`}
                     className="flex items-center p-3 hover:bg-neutral-800 transition-colors"
+                    // PERBAIKAN DI SINI:
+                    // 1. onMouseDown tetap ada untuk mencegah blur prematur
                     onMouseDown={(e) => e.preventDefault()}
+                    // 2. onClick untuk eksekusi logika penutupan & pembersihan
+                    onClick={handleLinkClick}
                   >
                     <User className="size-5 mr-3 text-primary-300" />
                     <div>

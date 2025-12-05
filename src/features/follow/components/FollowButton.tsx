@@ -38,7 +38,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
       className={`rounded-full min-w-[100px] transition-colors duration-200 ${
         isFollowing
           ? "text-foreground border-neutral-700 hover:bg-neutral-800" // Style Following
-          : "bg-primary-300 hover:bg-primary-600 text-white" // Style Follow
+          : "bg-primary-300 hover:bg-primary-200 text-white" // Style Follow
       }`}
     >
       {isLoading ? (

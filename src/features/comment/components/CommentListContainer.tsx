@@ -39,7 +39,7 @@ const CommentsListContent: React.FC<{ commentList: Comment[] }> = ({
               {item.author.name}
             </h3>
             <p className="text-xs-regular md:text-sm-regular text-neutral-400">
-              {item.createdAt}
+              {toRelativeTime(item.createdAt)}
             </p>
           </div>
         </div>

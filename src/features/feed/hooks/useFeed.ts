@@ -1,20 +1,25 @@
-import { ApiResponse } from "@/types/Api.type"
-import { FeedsListResponse } from "@/types/Feed.type"
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { getFeeds } from "../services/feedService"
+// src/features/feed/hooks/useFeed.ts
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getFeeds } from "../services/feedService";
+import { ApiResponse } from "@/types/Api.type";
+import { FeedsListResponse } from "@/types/Feed.type";
 
-export function useFeeds(
-  page: number = 1,
-  limit: number = 10
-) {
-  return useQuery<FeedsListResponse, Error>({
-    queryKey: ["feeds", page, limit],
-    queryFn: async () => {
-      const res: ApiResponse<FeedsListResponse> =
-        await getFeeds( page, limit)
-
-      return res.data 
+export function useInfiniteFeeds(limit: number = 10) {
+  return useInfiniteQuery<FeedsListResponse, Error>({
+    queryKey: ["feeds", "infinite"],
+    queryFn: async ({ pageParam = 1 }) => {
+      const res: ApiResponse<FeedsListResponse> = await getFeeds(
+        pageParam as number,
+        limit
+      );
+      return res.data;
     },
-    placeholderData: keepPreviousData,
-  })
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.pagination.page < lastPage.pagination.totalPages) {
+        return lastPage.pagination.page + 1;
+      }
+      return undefined;
+    },
+  });
 }

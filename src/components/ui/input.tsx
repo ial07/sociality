@@ -7,13 +7,12 @@ import {
   Eye,
   CloudUpload,
   Image as ImageIcon,
-  X,
-  Upload, // Import ikon Upload baru untuk tombol ganti
-  Trash2, // Import ikon Trash baru untuk tombol hapus
+  Trash2,
 } from "lucide-react";
 import { Label } from "./label";
 import Image from "next/image";
-import { Button } from "./button"; // Asumsi Anda memiliki Button ShadCN yang bisa diimport
+import { Button } from "./button";
+import { Icon } from "@iconify/react";
 
 type InputProps = React.ComponentProps<"input"> & {
   label?: string;
@@ -47,16 +46,14 @@ function Input({ label, error, id, type, className, ...props }: InputProps) {
     setPreview(null);
     const input = document.getElementById(inputId) as HTMLInputElement;
     if (input) input.value = "";
-    // Jika ada onChange dari RHF, panggil dengan null/undefined untuk mereset state file
     if (props.onChange) {
       props.onChange({ target: { files: null } } as any);
     }
   };
 
-  // Trigger klik input file hidden saat tombol 'Change Image' diklik
   const handleTriggerFileInput = (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation(); // Penting! Jangan buka dialog file di luar tombol
+    e.stopPropagation();
     document.getElementById(inputId)?.click();
   };
 
@@ -74,18 +71,16 @@ function Input({ label, error, id, type, className, ...props }: InputProps) {
             id={inputId}
             type="file"
             className="hidden"
-            onChange={handleFileChange}
             accept="image/*"
             {...props}
+            onChange={handleFileChange}
           />
 
           <label
             htmlFor={inputId}
             className={cn(
-              // Style saat KOSONG
               !preview &&
                 "flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-xl cursor-pointer transition-colors bg-neutral-950 border-neutral-800 hover:bg-neutral-900",
-              // Style saat ADA PREVIEW (Menjadi container untuk gambar dan tombol)
               preview &&
                 "border-solid border-neutral-800 p-0 overflow-hidden relative block",
               error && "border-[#EE1D52] bg-[#EE1D52]/10",
@@ -93,11 +88,8 @@ function Input({ label, error, id, type, className, ...props }: InputProps) {
             )}
           >
             {preview ? (
-              // Tampilan saat ada file/gambar terpilih
-              // Struktur: Gambar di atas (aspect-ratio), Tombol di bawah
               <div className="flex flex-col w-full">
-                {/* GAMBAR PREVIEW */}
-                <div className="relative w-full aspect-square">
+                <div className="relative w-full max-h-100 aspect-square">
                   <Image
                     src={preview}
                     alt="Preview"
@@ -106,20 +98,18 @@ function Input({ label, error, id, type, className, ...props }: InputProps) {
                   />
                 </div>
 
-                {/* BUTTONS / FOOTER */}
                 <div
                   className="flex justify-center gap-3 p-4 bg-neutral-950 border-t border-neutral-800"
-                  // Mencegah klik di area tombol membuka dialog file lagi
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Button
                     variant="secondary"
                     size="sm"
                     className="rounded-full px-4 text-xs"
-                    // Trigger klik pada input file hidden
                     onClick={handleTriggerFileInput}
                   >
-                    <Upload className="mr-2 h-4 w-4" /> Change Image
+                    <Icon icon="charm:upload" width="24" height="24" />
+                    Change Image
                   </Button>
 
                   <Button
@@ -128,12 +118,12 @@ function Input({ label, error, id, type, className, ...props }: InputProps) {
                     className="rounded-full px-4 text-xs"
                     onClick={handleRemoveFile}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete Image
+                    <Icon icon="octicon:trash-24" width="24" height="24" />
+                    Delete Image
                   </Button>
                 </div>
               </div>
             ) : (
-              // Tampilan Kosong (Upload Placeholder) - (Kode Anda tetap)
               <div className="flex flex-col items-center justify-center pt-5 pb-6 text-neutral-400">
                 <div className="bg-neutral-900 p-3 rounded-full mb-3">
                   <CloudUpload className="w-6 h-6 text-neutral-400" />

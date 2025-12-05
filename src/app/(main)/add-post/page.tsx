@@ -7,7 +7,7 @@ import React from "react";
 
 const AddPost: React.FC = () => {
   return (
-    <div>
+    <div className="h-screen">
       <Link
         href="/"
         className="flex-start gap-3 hidden md:inline cursor-pointer mb-6"
