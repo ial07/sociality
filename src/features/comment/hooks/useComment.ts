@@ -17,7 +17,6 @@ export function usePostCommentsById(
   return useQuery<CommentsListResponse, Error>({
     queryKey: ["postcommentid", id, page, limit],
     queryFn: async () => {
-      console.log("🚀 [DEBUG] Fetching Comments with params:", { id, page, limit });
       const res: ApiResponse<CommentsListResponse> = await getPostCommentsById(
         id,
         page,

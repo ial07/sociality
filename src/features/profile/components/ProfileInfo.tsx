@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import FollowButton from "@/features/follow/components/FollowButton";
 import { ProfileResponse, ProfileUserResponse } from "@/types/Profile.type";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
@@ -12,6 +13,7 @@ interface ProfileInfoProps {
   isLoading: boolean;
   isError: boolean;
   errorMessage: string | undefined;
+  isOwnProfile: boolean;
 }
 
 const ProfileInfo: React.FC<ProfileInfoProps> = ({
@@ -19,6 +21,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   isLoading,
   isError,
   errorMessage,
+  isOwnProfile,
 }) => {
   if (isError) return <span>{errorMessage}</span>;
 
@@ -34,6 +37,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
             width={40}
             height={40}
             className="rounded-full object-cover flex-shrink-0"
+            unoptimized
           />
           <div>
             <h3 className="text-sm-bold md:text-md-bold text-foreground">
@@ -44,14 +48,24 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
             </p>
           </div>
         </div>
+
         <div className="flex items-center gap-3">
-          <Button variant={"outline"} className="rounded-full" asChild>
-            <Link href="/edit-profile">Edit Profile</Link>
-          </Button>
-          <div className="rounded-full border border-neutral-900 p-3">
+          {isOwnProfile ? (
+            <Button variant={"outline"} className="rounded-full" asChild>
+              <Link href="/edit-profile">Edit Profile</Link>
+            </Button>
+          ) : (
+            <FollowButton
+              targetUsername={data.profile.username}
+              isFollowing={data.profile.isFollowing ?? false}
+            />
+          )}
+
+          <div className="rounded-full border border-neutral-900 p-3 cursor-pointer hover:bg-neutral-900 transition-colors">
             <Icon icon="bitcoin-icons:share-outline" width="24" height="24" />
           </div>
         </div>
+        {/* ------------------------------- */}
       </div>
       <p className="text-sm-regular md:text-md-regular mb-4">
         {data.profile.bio}

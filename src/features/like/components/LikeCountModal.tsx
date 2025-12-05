@@ -43,6 +43,7 @@ const LikesListContent: React.FC<Pick<LikeCountModalProps, "likeList">> = ({
             width={40}
             height={40}
             className="rounded-full object-cover"
+            unoptimized
           />
           <div>
             <h3 className="text-sm-bold md:text-md-bold text-foreground">

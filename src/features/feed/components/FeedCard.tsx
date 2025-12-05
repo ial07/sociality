@@ -11,10 +11,12 @@ import CommentCountModal from "@/features/comment/components/CommentCoundModal";
 import LikeButton from "@/features/like/components/LikeButton";
 import SaveButton from "@/features/saves/components/SaveButton";
 import { toRelativeTime } from "@/lib/utils";
+import Link from "next/link";
 
 interface FeedCardProps {
   id: number;
   authorName: string;
+  username: string;
   authorAvatarUrl?: string;
   timeAgo: string;
   feedImageUrl: string;
@@ -32,6 +34,7 @@ const MAX_CAPTION_LENGTH = 150;
 const FeedCard: React.FC<FeedCardProps> = ({
   id,
   authorName,
+  username,
   authorAvatarUrl,
   timeAgo,
   feedImageUrl,
@@ -66,7 +69,10 @@ const FeedCard: React.FC<FeedCardProps> = ({
 
   return (
     <div className="bg-neutral-950 rounded-xl">
-      <div className="flex-start gap-2 md:gap-3 mb-2 md:mb-4">
+      <Link
+        href={`/profile/${username}`}
+        className="flex-start gap-2 md:gap-3 mb-2 md:mb-4"
+      >
         <Image
           src={authorAvatarUrl ?? "/images/author.png"}
           alt={authorName}
@@ -83,7 +89,7 @@ const FeedCard: React.FC<FeedCardProps> = ({
             {toRelativeTime(timeAgo)}
           </p>
         </div>
-      </div>
+      </Link>
 
       <div className="w-full rounded-md overflow-hidden mb-2 md:mb-3 aspect-square">
         <Image

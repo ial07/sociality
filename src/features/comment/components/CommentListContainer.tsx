@@ -7,6 +7,7 @@ import Image from "next/image";
 import CommentInput from "./CommentInput";
 import { Icon } from "@iconify/react";
 import { usePostCommentsById } from "../hooks/useComment";
+import { toRelativeTime } from "@/lib/utils";
 
 interface CommentListContainerProps {
   id: number;
@@ -83,10 +84,7 @@ const CommentListContainer: React.FC<CommentListContainerProps> = ({
   };
 
   return (
-    // Struktur Layout Desktop/Mobile disatukan disini atau dipisah sesuai kebutuhan
-    // Untuk contoh ini, saya ambil struktur bagian dalam Dialog Desktop Anda
     <div className="flex w-full h-full rounded-lg overflow-hidden flex-col md:flex-row">
-      {/* Gambar Kiri (Desktop Only) / Atas (Mobile) */}
       <div className="relative w-full md:w-[560px] h-[200px] md:h-full flex-shrink-0 bg-neutral-900 hidden md:block">
         <Image
           src={feedImageUrl}
@@ -97,9 +95,7 @@ const CommentListContainer: React.FC<CommentListContainerProps> = ({
         />
       </div>
 
-      {/* Konten Kanan */}
       <div className="flex flex-col flex-grow h-full w-full md:w-[440px] p-5">
-        {/* Header Caption */}
         <div className="flex-shrink-0">
           <div className="flex gap-3 items-center mb-2">
             <Image
@@ -107,6 +103,7 @@ const CommentListContainer: React.FC<CommentListContainerProps> = ({
               alt={authorName}
               width={40}
               height={40}
+              unoptimized
               className="rounded-full object-cover flex-shrink-0"
             />
             <div>
@@ -114,7 +111,7 @@ const CommentListContainer: React.FC<CommentListContainerProps> = ({
                 {authorName}
               </h3>
               <p className="text-xs-regular md:text-sm-regular text-neutral-400">
-                {timeAgo}
+                {toRelativeTime(timeAgo)}
               </p>
             </div>
           </div>
@@ -125,15 +122,13 @@ const CommentListContainer: React.FC<CommentListContainerProps> = ({
 
         <hr className="my-4 border-neutral-900" />
         <span className="text-md-bold mb-4 block">
-          Comments ({commentsCount})
+          Comments {commentsCount !== 0 && `(${commentsCount})`}
         </span>
 
-        {/* List Komentar */}
         <div className="flex-grow overflow-y-auto thin-scrollbar">
           {renderContent()}
         </div>
 
-        {/* Input */}
         <div className="flex gap-2 w-full mt-4">
           <div className="p-3 border border-neutral-900 w-fit rounded-xl text-white cursor-pointer">
             <Icon

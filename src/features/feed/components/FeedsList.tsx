@@ -14,8 +14,9 @@ const FeedsList: React.FC = () => {
         <React.Fragment key={feed.id}>
           <FeedCard
             id={feed.id}
-            authorName={feed.author.name}
-            authorAvatarUrl={feed.author.avatarUrl}
+            authorName={feed.author?.name}
+            username={feed.author?.username}
+            authorAvatarUrl={feed.author?.avatarUrl}
             timeAgo={feed.createdAt}
             feedImageUrl={feed.imageUrl}
             captionText={feed.caption}

@@ -1,3 +1,4 @@
+import RouteGuard from "@/components/common/RouteGuard";
 import MainLayout from "@/components/layout/MainLayout";
 import React from "react";
 
@@ -6,5 +7,9 @@ export default function MainRouteLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <MainLayout>{children}</MainLayout>;
+  return (
+    <RouteGuard isPrivate={true}>
+      <MainLayout>{children}</MainLayout>
+    </RouteGuard>
+  );
 }

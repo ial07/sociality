@@ -17,7 +17,11 @@ import Link from "next/link";
 
 const Header: React.FC = () => {
   const token = useSelector((state: RootState) => state.auth.token);
+  const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
+
+  const userAvatar = user?.avatarUrl || "/images/author.png";
+  const userName = user?.name || "Guest";
 
   function handleLogout() {
     dispatch(logout());
@@ -49,14 +53,15 @@ const Header: React.FC = () => {
               <DropdownMenuTrigger asChild>
                 <div className="flex items-center gap-2 cursor-pointer">
                   <Image
-                    src="/images/author.png"
-                    alt="avatar"
-                    width={20}
-                    height={20}
-                    className="w-10 h-10 rounded-full"
+                    unoptimized
+                    src={userAvatar}
+                    alt={userName}
+                    width={40} // Sesuaikan width/height agar match dengan className w-10 (40px)
+                    height={40}
+                    className="w-10 h-10 rounded-full object-cover" // object-cover agar gambar tidak gepeng
                   />
                   <span className="md:text-md-semibold text-sm-semibold hidden md:block">
-                    John Doe
+                    {userName}
                   </span>
                 </div>
               </DropdownMenuTrigger>

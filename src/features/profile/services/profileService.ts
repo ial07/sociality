@@ -56,11 +56,6 @@ export async function updateProfile(
     formData.append("avatar", payload.avatar[0]); 
   }
 
-  // Debugging (Opsional): Cek isi FormData di console
-  // for (let pair of formData.entries()) {
-  //   console.log(pair[0] + ', ' + pair[1]);
-  // }
-
   try {
     const res = await apiInstance.patch<ApiResponse<Author>>(
       "/me",

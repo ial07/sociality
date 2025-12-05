@@ -8,10 +8,20 @@ export interface Author {
     avatarUrl?:string;
     createdAt?:string;
     isFollowedByMe?:boolean;
+    counts?: Counts;
+    isFollowing?:boolean;
+    isMe?:boolean;
 }
 
 export interface Stats {
     posts:number;
+    followers:number;
+    following:number;
+    likes:number;
+  }
+
+  export interface Counts {
+    post:number;
     followers:number;
     following:number;
     likes:number;

@@ -1,5 +1,4 @@
 import EmptyData from "@/components/EmptyData";
-import { Button } from "@/components/ui/button";
 import CommentCountModal from "@/features/comment/components/CommentCoundModal";
 import { Feed, FeedsListResponse, PostListResponse } from "@/types/Feed.type";
 import Image from "next/image";
@@ -10,6 +9,7 @@ type ListProfilePostProps = {
   isLoading: boolean;
   isError: boolean;
   errorMessage: string | undefined;
+  isOwnProfile: boolean;
 };
 
 const ListProfilePost: React.FC<ListProfilePostProps> = ({
@@ -17,9 +17,9 @@ const ListProfilePost: React.FC<ListProfilePostProps> = ({
   isLoading,
   isError,
   errorMessage,
+  isOwnProfile,
 }) => {
   let postsContent: Feed[] = [];
-  console.log(data);
 
   if (data !== null)
     if ("items" in data) {
@@ -28,7 +28,8 @@ const ListProfilePost: React.FC<ListProfilePostProps> = ({
       postsContent = data.posts;
     }
 
-  if (postsContent.length == 0) return <EmptyData />;
+  if (postsContent.length == 0)
+    return <EmptyData isOwnProfile={isOwnProfile} />;
 
   if (isError) return <span>{errorMessage}</span>;
 
@@ -44,7 +45,7 @@ const ListProfilePost: React.FC<ListProfilePostProps> = ({
               id={p.id}
               commentsCount={p.commentCount}
               authorName={p.author?.name}
-              authorAvatarUrl={p.author.avatarUrl ?? "/images/author.png"}
+              authorAvatarUrl={p.author?.avatarUrl ?? "/images/author.png"}
               timeAgo={p.createdAt}
               feedImageUrl={p.imageUrl}
               captionText={p.caption}

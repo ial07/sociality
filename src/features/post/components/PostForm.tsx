@@ -19,7 +19,6 @@ const PostForm: React.FC = () => {
 
   const onSubmit = (values: NewPostFormValues) => {
     const imageFile = values.image?.[0];
-    console.log(imageFile);
 
     if (!imageFile) {
       toast.error("Please select an image file.");
@@ -38,7 +37,7 @@ const PostForm: React.FC = () => {
     });
   };
 
-  const { value, ...imageProps } = register("image");
+  const { ref, name, onBlur, onChange } = register("image");
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -46,7 +45,12 @@ const PostForm: React.FC = () => {
         label="Photo"
         type="file"
         id="image"
-        {...imageProps}
+        name={name}
+        ref={ref}
+        onBlur={onBlur}
+        onChange={(e) => {
+          onChange(e);
+        }}
         error={errors.image?.message}
       />
 

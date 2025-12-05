@@ -40,7 +40,7 @@ const EditProfileForm: React.FC = () => {
     editProfileMutation.mutate(values);
   };
 
-  const { value: avatarValue, ...avatarProps } = register("avatar");
+  const { ref, name, onBlur, onChange } = register("avatar");
 
   if (isUserLoading) return <div>Loading...</div>;
 
@@ -51,9 +51,22 @@ const EditProfileForm: React.FC = () => {
     >
       <div className="flex-center flex-col w-40">
         <img
-          src="/images/author.png"
+          src={userData?.profile.avatarUrl ?? "/images/author.png"}
           alt="author"
-          className="size-20 md:size-30 aspect-square"
+          className="size-20 md:size-30 aspect-square rounded-full object-cover"
+        />
+
+        <Input
+          type="file"
+          id="avatar"
+          name={name}
+          ref={ref}
+          onBlur={onBlur}
+          onChange={(e) => {
+            onChange(e);
+          }}
+          error={errors.avatar?.message}
+          className="mt-3"
         />
       </div>
       <div className="w-full">

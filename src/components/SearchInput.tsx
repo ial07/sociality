@@ -30,16 +30,13 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...props }) => {
   const [isMobileInputVisible, setIsMobileInputVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
-  // State: Apa yang user ketik
   const [searchTerm, setSearchTerm] = useState("");
 
-  // 2. Debounce nilai input (tunggu 500ms setelah user berhenti mengetik)
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const isDesktop = typeof window !== "undefined" && window.innerWidth >= 768;
 
-  // 3. FETCH DATA (Otomatis jalan saat debouncedSearchTerm berubah)
   const {
     data: searchResults,
     isLoading,
@@ -48,10 +45,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...props }) => {
 
   const users: Author[] = searchResults?.users || [];
 
-  // Logic popup: Tampilkan jika fokus dan user sudah mengetik
   const shouldShowPopup = isFocused && searchTerm.length > 0;
-
-  // --- HANDLERS ---
 
   const toggleInput = () => {
     if (!isDesktop) {
@@ -83,7 +77,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...props }) => {
     }, 200);
   };
 
-  // --- STYLING ---
   const shouldShowInput = isDesktop || isMobileInputVisible;
 
   const inputClasses = `
@@ -110,10 +103,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...props }) => {
         <Search className="size-5" />
       </button>
 
-      {/* INPUT AREA */}
       {shouldShowInput && (
         <div className="relative w-full md:w-auto flex items-center">
-          {/* Icon Search Statis */}
           <div className="absolute left-3 text-neutral-500 pointer-events-none">
             <Search className="size-5" />
           </div>
@@ -124,14 +115,12 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...props }) => {
             className={inputClasses}
             placeholder="Search..."
             value={searchTerm}
-            // Update searchTerm saat mengetik (memicu debounce -> memicu API)
             onChange={(e) => setSearchTerm(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={handleBlur}
             {...props}
           />
 
-          {/* Clear Button */}
           {searchTerm.length > 0 && (
             <button
               type="button"
@@ -142,9 +131,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...props }) => {
             </button>
           )}
 
-          {/* POPUP RESULT */}
           {shouldShowPopup && (
-            <div className="absolute top-full mt-2 w-full md:w-[300px] bg-neutral-900 border border-neutral-800 rounded-xl shadow-lg z-20 overflow-hidden">
+            <div className="absolute top-full mt-2 w-full md:w-[491px] bg-neutral-900 border border-neutral-800 rounded-xl shadow-lg z-20 overflow-hidden">
               {isFetching || isLoading ? (
                 <div className="p-4 text-neutral-400 text-sm text-center">
                   Searching...
@@ -169,7 +157,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...props }) => {
                   </Link>
                 ))
               ) : (
-                // Tampilkan pesan kosong hanya jika kita sudah selesai loading
                 <div className="p-4 text-neutral-500 text-sm text-center">
                   No results found for "{searchTerm}"
                 </div>
